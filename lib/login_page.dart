@@ -26,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     await _firebaseMessaging.requestPermission();
     final fCMToken = await  _firebaseMessaging.getToken();
+    _firebaseMessaging.onTokenRefresh.listen((token) {
+      print('APNS token is: $token');
+      // Send the token to your server or perform any other necessary actions
+    });
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     final String email = _emailController.text;
     final String password = _passwordController.text;
