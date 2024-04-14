@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -29,34 +28,54 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller =
   Completer<WebViewController>();
+  bool _isLoading = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: WebView(
-          initialUrl: _buildInitialUrl(),
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-            // Check if onWebViewCreated is called
-            print('WebView Created');
-          },
-          javascriptChannels: <JavascriptChannel>[
-            _createFlutterBridgeChannel(),
-          ].toSet(),
-          navigationDelegate: (NavigationRequest request) {
-            print('Navigation request: ${request.url}');
-            if (request.url.contains('https://staging.swwipe.com:8443/login')) {
-              _logout();
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-          onWebResourceError: (WebResourceError error) {
-            print('Error occurred: $error');
-          },
-        ),
+      body: Stack(
+        children: [
+          WebView(
+            initialUrl: _buildInitialUrl(),
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller.complete(webViewController);
+            },
+            onPageFinished: (String url) {
+              setState(() {
+                _isLoading = false;
+              });
+            },
+            onPageStarted: (String url) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            javascriptChannels: <JavascriptChannel>[
+              _createFlutterBridgeChannel(),
+            ].toSet(),
+            navigationDelegate: (NavigationRequest request) {
+              print('Navigation request: ${request.url}');
+              if (request.url
+                  .contains('https://staging.swwipe.com:8443/login')) {
+                _logout();
+                return NavigationDecision.prevent;
+              }
+              return NavigationDecision.navigate;
+            },
+            onWebResourceError: (WebResourceError error) {
+              print('Error occurred: $error');
+            },
+          ),
+          if (_isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFF8E1611), // Set the color here
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -66,9 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _logout() {
-    // Implement your logout logic here
     print('Logout triggered from WebView');
-    // Close the WebView and navigate to the login page
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -76,13 +93,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return JavascriptChannel(
       name: 'FlutterBridge',
       onMessageReceived: (JavascriptMessage message) {
-        // Handle message received from JavaScript
         print('Message from JavaScript: ${message.message}');
         if (message.message == 'Requesting logout from Webview') {
-          _logout(); // Call the logout function
+          _logout();
         }
-
-        // You can perform actions based on the received message here
       },
     );
   }
