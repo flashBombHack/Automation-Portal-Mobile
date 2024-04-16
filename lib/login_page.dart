@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'PasswordResetPage.dart';
 import 'dashboard_screen.dart';
@@ -18,10 +19,60 @@ class _LoginPageState extends State<LoginPage> {
   final _firebaseMessaging = FirebaseMessaging.instance;
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  bool _isLoggedIn = false;
+  bool _isBiometricEnabled = false;
 
   static const String _loginUrl = 'https://stagings.vaps.parkwayprojects.xyz/SAP-API/api/user/mobile/login';
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometricEnabled();
+    _checkLoggedIn();
+  }
+
+  Future<void> _checkLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loggedIn = prefs.getBool('loggedIn') ?? false;
+    setState(() {
+      _isLoggedIn = loggedIn;
+    });
+  }
+
+  Future<void> _checkBiometricEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    final biometricEnabled = prefs.getBool('biometricEnabled') ?? false;
+    setState(() {
+      _isBiometricEnabled = biometricEnabled;
+    });
+  }
+
+  Future<Future<bool?>> _promptBiometricSetup() async {
+    // Show dialog asking the user to enable biometric authentication
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Enable Biometric Authentication?'),
+        content: Text('Do you want to enable biometric authentication for future logins?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // User declined
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // User accepted
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
   }
 
 
@@ -30,6 +81,16 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = true; // Set loading state to true when login button is pressed
     });
+
+    if (!_isLoggedIn) {
+      // Prompt user to enable biometric authentication
+      await _promptBiometricSetup();
+      if (_isBiometricEnabled) {
+        // Save biometric setting to shared preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('biometricEnabled', true);
+      }
+    }
 
     await _firebaseMessaging.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
@@ -119,6 +180,10 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (error) {
       print('Error during login: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occured, please contact the system administrator')),
+      );
+
     }
     finally {
       setState(() {
@@ -224,6 +289,11 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
+              SizedBox(height: 8), // Add space between button and icon
+              _isLoggedIn && _isBiometricEnabled
+                  ? Icon(Icons.face_unlock_outlined) // Use biometric icon if enabled
+                  : SizedBox(), // Otherwise, show nothing
+
 
             ],
           ),
