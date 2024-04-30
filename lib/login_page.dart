@@ -293,15 +293,15 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 8),
               if (Platform.isIOS)
                 Image.asset(
-                  'assets/face_id_icon.svg',
+                  'assets/FaceID.png',
                   width: 30,
                   height: 30,
                 ),
               if (Platform.isAndroid)
-                Container(
+                Image.asset(
+                  'assets/Fingerprint.png',
                   width: 30,
                   height: 30,
-                  child: Icon(Icons.fingerprint_outlined),
                 ),
             ],
           ),

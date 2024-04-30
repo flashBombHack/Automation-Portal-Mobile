@@ -69,6 +69,8 @@ flutter:
    - assets/LotusLogo.png
    - assets/lotusicon.png
    - assets/face_id_icon.svg
+   - assets/FaceID.png
+   - assets/Fingerprint.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
