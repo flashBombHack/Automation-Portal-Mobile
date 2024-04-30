@@ -289,19 +289,18 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 8),
-              SizedBox(height: 8),
+              SizedBox(height: 50),
               if (Platform.isIOS)
                 Image.asset(
                   'assets/FaceID.png',
-                  width: 30,
-                  height: 30,
+                  width: 80,
+                  height: 80,
                 ),
               if (Platform.isAndroid)
                 Image.asset(
                   'assets/Fingerprint.png',
-                  width: 30,
-                  height: 30,
+                  width: 80,
+                  height: 80,
                 ),
             ],
           ),
