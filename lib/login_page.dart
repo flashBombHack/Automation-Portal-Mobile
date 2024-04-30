@@ -289,14 +289,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 8),
+              SizedBox(height: 8),
               if (Platform.isIOS)
-                _isLoggedIn && _isBiometricEnabled
-                    ? Icon(Icons.face_unlock_outlined) // For iOS, display FaceID icon
-                    : SizedBox(),
+                Icon(Icons.face_unlock_outlined),
               if (Platform.isAndroid)
-                _isLoggedIn && _isBiometricEnabled
-                    ? Icon(Icons.fingerprint_outlined) // For Android, display fingerprint icon
-                    : SizedBox(),
+                Icon(Icons.fingerprint_outlined),
             ],
           ),
         ),
