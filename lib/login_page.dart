@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:local_auth/local_auth.dart';
+import 'package:local_auth/local_auth.dart';
 
 import 'PasswordResetPage.dart';
 import 'dashboard_screen.dart';
@@ -18,10 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _firebaseMessaging = FirebaseMessaging.instance;
+  late final  email = null;
+  late final  password = null;
   bool _isPasswordVisible = false;
   bool _isLoading = false;
   bool _isLoggedIn = false;
   bool _isBiometricEnabled = false;
+  final LocalAuthentication _localAuthentication = LocalAuthentication();
 
   static const String _loginUrl = 'https://automationapi.lotuscapitallimited.com/api/user/mobile/login';
 
@@ -49,6 +52,37 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isBiometricEnabled = biometricEnabled;
     });
+  }
+
+  Future<bool> _isCredentialsStored() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    String? password = prefs.getString('password');
+    return email != null && password != null;
+  }
+
+  Future<void> _authenticateBiometric() async {
+    bool authenticated = false;
+    try {
+      authenticated = await _localAuthentication.authenticate(
+        localizedReason: 'Authenticate to enable biometric authentication',
+      );
+    } catch (e) {
+      print('Error during biometric authentication: $e');
+    }
+
+    if (authenticated) {
+      final prefs = await SharedPreferences.getInstance();
+      String? email = prefs.getString('email');
+      String? password = prefs.getString('password');
+      if (email != null && password != null) {
+        _login;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login first to enable biometric authentication')),
+        );
+      }
+    }
   }
 
   Future<Future<bool?>> _promptBiometricSetup() async {
@@ -80,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     setState(() {
-      _isLoading = true; // Set loading state to true when login button is pressed
+      _isLoading = true;
     });
 
     if (!_isLoggedIn) {
@@ -100,8 +134,8 @@ class _LoginPageState extends State<LoginPage> {
       // Send the token to your server or perform any other necessary actions
     });
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
+    String? email = _emailController.text;
+    String? password = _passwordController.text;
 
     String deviceToken = fCMToken ?? '';
 
@@ -294,34 +328,40 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 50),
               if (Platform.isIOS)
-                Column(
-                  children: [
-                    Image.asset(
-                      'assets/FaceID.png',
-                      width: 70,
-                      height: 70,
-                    ),
-                    SizedBox(height: 8), // Adjust the spacing between the image and text as needed
-                    Text(
-                      'Login with Face ID',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
+                GestureDetector(
+                  onTap: _authenticateBiometric,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/FaceID.png',
+                        width: 70,
+                        height: 70,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Login with Face ID',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               if (Platform.isAndroid)
-                Column(
-                  children: [
-                    Image.asset(
-                      'assets/Fingerprint.png',
-                      width: 70,
-                      height: 70,
-                    ),
-                    SizedBox(height: 8), // Adjust the spacing between the image and text as needed
-                    Text(
-                      'Login with Fingerprint',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
+                GestureDetector(
+                  onTap: _authenticateBiometric,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/Fingerprint.png',
+                        width: 70,
+                        height: 70,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Login with Fingerprint',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
             ],
           ),
