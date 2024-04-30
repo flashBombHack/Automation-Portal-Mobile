@@ -201,6 +201,8 @@ class _LoginPageState extends State<LoginPage> {
         body: SafeArea(
         child: Center(
         child: SingleChildScrollView(
+        child: Container(
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -325,6 +327,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+        ),
         ),
         )
     );
