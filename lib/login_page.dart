@@ -24,7 +24,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _isLoggedIn = false;
   bool _isBiometricEnabled = false;
-  final LocalAuthentication _localAuthentication = LocalAuthentication();
+  static final _auth = LocalAuthentication();
+  bool authenticated = false;
 
   static const String _loginUrl = 'https://automationapi.lotuscapitallimited.com/api/user/mobile/login';
 
@@ -54,17 +55,39 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  // Future<bool> _isCredentialsStored() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? email = prefs.getString('email');
-  //   String? password = prefs.getString('password');
-  //   return email != null && password != null;
-  // }
+  Future<bool> _isCredentialsStored() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    String? password = prefs.getString('password');
+    return email != null && password != null;
+  }
+
+  Future<bool> _canAuthenticate() async =>
+  await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
+
+  Future<bool> authenticate() async {
+
+    try {
+      if (!await _canAuthenticate()) return false;
+
+      return await _auth.authenticate(
+          localizedReason: 'Use Face ID to authenticate',
+        options: const AuthenticationOptions(
+          useErrorDialogs: true,
+          stickyAuth: true,
+        )
+      );
+    } catch (e) {
+      debugPrint('Error: $e');
+      return false;
+    }
+  }
 
   Future<void> _authenticateBiometric() async {
     bool authenticated = false;
+
     try {
-      authenticated = await _localAuthentication.authenticate(
+      authenticated = await _auth.authenticate(
         localizedReason: 'Authenticate to enable biometric authentication',
       );
     } catch (e) {
@@ -347,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               if (Platform.isAndroid)
                 GestureDetector(
-                  onTap: _authenticateBiometric,
+                  onTap: authenticate,
                   child: Column(
                     children: [
                       Image.asset(
