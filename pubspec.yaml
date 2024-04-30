@@ -42,6 +42,7 @@ dependencies:
   webview_flutter: ^2.8.0
   flutter_inappwebview: ^6.0.0
   shared_preferences: ^2.0.8
+  local_auth: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
   assets:
    - assets/LotusLogo.png
    - assets/lotusicon.png
+   - assets/face_id_icon.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
