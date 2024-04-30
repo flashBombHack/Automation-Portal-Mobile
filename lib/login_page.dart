@@ -54,12 +54,12 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<bool> _isCredentialsStored() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? email = prefs.getString('email');
-    String? password = prefs.getString('password');
-    return email != null && password != null;
-  }
+  // Future<bool> _isCredentialsStored() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String? email = prefs.getString('email');
+  //   String? password = prefs.getString('password');
+  //   return email != null && password != null;
+  // }
 
   Future<void> _authenticateBiometric() async {
     bool authenticated = false;
