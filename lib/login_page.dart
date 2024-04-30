@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoggedIn = false;
   bool _isBiometricEnabled = false;
 
-  static const String _loginUrl = 'https://stagings.vaps.parkwayprojects.xyz/SAP-API/api/user/mobile/login';
+  static const String _loginUrl = 'https://automationapi.lotuscapitallimited.com/api/user/mobile/login';
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
   }
@@ -289,10 +289,10 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 8), // Add space between button and icon
+              SizedBox(height: 8),
               _isLoggedIn && _isBiometricEnabled
-                  ? Icon(Icons.face_unlock_outlined) // Use biometric icon if enabled
-                  : SizedBox(), // Otherwise, show nothing
+                  ? Icon(Icons.face_unlock_outlined)
+                  : SizedBox(),
 
 
             ],

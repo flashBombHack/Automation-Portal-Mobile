@@ -81,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   String _buildInitialUrl() {
-    return 'https://staging.swwipe.com:8443/mobile?token=${widget.token}&firstName=${widget.firstName}&lastName=${widget.lastName}&email=${widget.email}&userId=${widget.userId}&role=${widget.role}&department=${widget.department}';
+    return 'https://autoportal.lotuscapitallimited.com/mobile?token=${widget.token}&firstName=${widget.firstName}&lastName=${widget.lastName}&email=${widget.email}&userId=${widget.userId}&role=${widget.role}&department=${widget.department}';
   }
 
   void _logout() {
