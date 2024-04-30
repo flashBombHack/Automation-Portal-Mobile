@@ -193,7 +193,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -290,16 +289,20 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 8),
-              _isLoggedIn && _isBiometricEnabled
-                  ? Icon(Icons.face_unlock_outlined)
-                  : SizedBox(),
-
-
+              if (Platform.isIOS)
+                _isLoggedIn && _isBiometricEnabled
+                    ? Icon(Icons.face_unlock_outlined) // For iOS, display FaceID icon
+                    : SizedBox(),
+              if (Platform.isAndroid)
+                _isLoggedIn && _isBiometricEnabled
+                    ? Icon(Icons.fingerprint_outlined) // For Android, display fingerprint icon
+                    : SizedBox(),
             ],
           ),
         ),
       ),
     );
   }
+
 
   }
