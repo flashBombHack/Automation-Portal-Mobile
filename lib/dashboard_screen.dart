@@ -33,52 +33,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          WebView(
-            initialUrl: _buildInitialUrl(),
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
-              _controller.complete(webViewController);
-            },
-            onPageFinished: (String url) {
-              setState(() {
-                _isLoading = false;
-              });
-            },
-            onPageStarted: (String url) {
-              setState(() {
-                _isLoading = true;
-              });
-            },
-            javascriptChannels: <JavascriptChannel>[
-              _createFlutterBridgeChannel(),
-            ].toSet(),
-            navigationDelegate: (NavigationRequest request) {
-              print('Navigation request: ${request.url}');
-              if (request.url
-                  .contains('https://staging.swwipe.com:8443/login')) {
-                _logout();
-                return NavigationDecision.prevent;
-              }
-              return NavigationDecision.navigate;
-            },
-            onWebResourceError: (WebResourceError error) {
-              print('Error occurred: $error');
-            },
-          ),
-          if (_isLoading)
-            Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFF8E1611), // Set the color here
+      body: SafeArea(
+        child: Stack(
+          children: [
+            WebView(
+              initialUrl: _buildInitialUrl(),
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) {
+                _controller.complete(webViewController);
+              },
+              onPageFinished: (String url) {
+                setState(() {
+                  _isLoading = false;
+                });
+              },
+              onPageStarted: (String url) {
+                setState(() {
+                  _isLoading = true;
+                });
+              },
+              javascriptChannels: <JavascriptChannel>[
+                _createFlutterBridgeChannel(),
+              ].toSet(),
+              navigationDelegate: (NavigationRequest request) {
+                print('Navigation request: ${request.url}');
+                if (request.url.contains('https://autoportal.lotuscapitallimited.com/login')) {
+                  _logout();
+                  return NavigationDecision.prevent;
+                }
+                return NavigationDecision.navigate;
+              },
+              onWebResourceError: (WebResourceError error) {
+                print('Error occurred: $error');
+              },
+            ),
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Color(0xFF8E1611), // Set the color here
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
 
   String _buildInitialUrl() {
     return 'https://autoportal.lotuscapitallimited.com/mobile?token=${widget.token}&firstName=${widget.firstName}&lastName=${widget.lastName}&email=${widget.email}&userId=${widget.userId}&role=${widget.role}&department=${widget.department}';
