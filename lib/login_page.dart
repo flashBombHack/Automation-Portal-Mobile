@@ -197,19 +197,17 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-        child: Center(
+        body: Center(
+        child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Add your logo here
               Image.asset(
                 'assets/LotusLogo.png',
                 height: 100,
-                // Adjust width and height as needed
               ),
               SizedBox(height: 16.0),
               Text(
