@@ -291,16 +291,34 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 50),
               if (Platform.isIOS)
-                Image.asset(
-                  'assets/FaceID.png',
-                  width: 80,
-                  height: 80,
+                Column(
+                  children: [
+                    Image.asset(
+                      'assets/FaceID.png',
+                      width: 70,
+                      height: 70,
+                    ),
+                    SizedBox(height: 8), // Adjust the spacing between the image and text as needed
+                    Text(
+                      'Login with Face ID',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
               if (Platform.isAndroid)
-                Image.asset(
-                  'assets/Fingerprint.png',
-                  width: 80,
-                  height: 80,
+                Column(
+                  children: [
+                    Image.asset(
+                      'assets/Fingerprint.png',
+                      width: 70,
+                      height: 70,
+                    ),
+                    SizedBox(height: 8), // Adjust the spacing between the image and text as needed
+                    Text(
+                      'Login with Fingerprint',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
             ],
           ),
