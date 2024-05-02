@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart'; // Import the login page to navigate back after password reset
 
 class PasswordResetPage extends StatefulWidget {
@@ -55,6 +56,8 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
         // Navigate back to the login page after successful password reset
         if (message == 'Password updated successfully.') {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('password', newPassword);
           Navigator.pushReplacementNamed(context, '/login');
         }
       } else if (response.statusCode == 400) {
