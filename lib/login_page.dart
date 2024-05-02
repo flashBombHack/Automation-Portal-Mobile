@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       String? email = prefs.getString('email');
       String? password = prefs.getString('password');
       if (email != null && password != null) {
-        _login;
+        _login(email, password);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login first to enable biometric authentication')),
@@ -135,20 +135,10 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
-  Future<void> _login() async {
+  Future<void> _login(String email, String password) async {
     setState(() {
       _isLoading = true;
     });
-
-    if (!_isLoggedIn) {
-      // Prompt user to enable biometric authentication
-      await _promptBiometricSetup();
-      if (_isBiometricEnabled) {
-        // Save biometric setting to shared preferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('biometricEnabled', true);
-      }
-    }
 
     await _firebaseMessaging.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
@@ -157,8 +147,6 @@ class _LoginPageState extends State<LoginPage> {
       // Send the token to your server or perform any other necessary actions
     });
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-    String? email = _emailController.text;
-    String? password = _passwordController.text;
 
     String deviceToken = fCMToken ?? '';
 
@@ -181,6 +169,9 @@ class _LoginPageState extends State<LoginPage> {
       final String message = data['message'];
 
       if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('email', email);
+        await prefs.setString('password', password);
         print('Login successful: $data');
         // Check if password is on reset mode
         final int onReset = data['onreset'];
@@ -245,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     finally {
       setState(() {
-        _isLoading = false; // Set loading state to false after login attempt
+        _isLoading = false;
       });
     }
   }
@@ -325,7 +316,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: _isLoading ? null : _login, // Disable button while loading
+                onPressed: _isLoading
+                    ? null
+                    :  () {
+                  String email = _emailController.text;
+                  String password = _passwordController.text;
+                  _login(email, password);
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Color(0xFF8E1611),
@@ -370,7 +367,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               if (Platform.isAndroid)
                 GestureDetector(
-                  onTap: authenticate,
+                  onTap: _authenticateBiometric,
                   child: Column(
                     children: [
                       Image.asset(
