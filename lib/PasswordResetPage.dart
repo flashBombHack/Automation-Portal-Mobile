@@ -35,6 +35,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
     final Uri url = Uri.parse('https://automationapi.lotuscapitallimited.com/api/user/resetpassword');
     try {
+      print('Parsed Email value $widget.email');
       final http.Response response = await http.put(
         url,
         headers: <String, String>{
