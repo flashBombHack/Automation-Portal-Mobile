@@ -33,7 +33,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       return;
     }
 
-    final Uri url = Uri.parse('https://stagings.vaps.parkwayprojects.xyz/SAP-API/api/user/resetpassword');
+    final Uri url = Uri.parse('https://automationapi.lotuscapitallimited.com/api/user/resetpassword');
     try {
       final http.Response response = await http.put(
         url,
@@ -54,7 +54,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
           SnackBar(content: Text(message)),
         );
 
-        // Navigate back to the login page after successful password reset
+
         if (message == 'Password updated successfully.') {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('password', newPassword);
