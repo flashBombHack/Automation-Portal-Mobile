@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBiXFuMHVlCLzhvVe0TAeI3TMXVEDibdik</string>
+	<string>AIzaSyDcbOG6Ygq57T6t7P9-UownnhLgx-4dhgI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1086151123753</string>
+	<string>408991215613</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.lotuscapitalportal</string>
+	<string>com.lotuscapitalportal</string>
 	<key>PROJECT_ID</key>
-	<string>lotus2-e54de</string>
+	<string>lotuscaptialportal</string>
 	<key>STORAGE_BUCKET</key>
-	<string>lotus2-e54de.appspot.com</string>
+	<string>lotuscaptialportal.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,7 +25,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1086151123753:ios:11affb001bd3daa2a90d38</string>
+	<string>1:408991215613:ios:fc43cd9d7470cec5d1f394</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 </dict>

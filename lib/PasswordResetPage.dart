@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_page.dart'; // Import the login page to navigate back after password reset
+import 'login_page.dart';
 
 class PasswordResetPage extends StatefulWidget {
   final String email;
