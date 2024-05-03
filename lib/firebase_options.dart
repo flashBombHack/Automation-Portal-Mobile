@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAwdUzYsJySR2YDQVu-liVgpmg6qSozc9g',
-    appId: '1:1086151123753:android:6f7471f5ae5a0ee3a90d38',
-    messagingSenderId: '1086151123753',
-    projectId: 'lotus2-e54de',
-    storageBucket: 'lotus2-e54de.appspot.com',
+    apiKey: 'AIzaSyAN-Bg_bdurAmHI12o9JBKkWJJ3YKaQbnM',
+    appId: '1:408991215613:android:fabe3124a299d29cd1f394',
+    messagingSenderId: '408991215613',
+    projectId: 'lotuscaptialportal',
+    storageBucket: 'lotuscaptialportal.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBiXFuMHVlCLzhvVe0TAeI3TMXVEDibdik',
-    appId: '1:1086151123753:ios:11affb001bd3daa2a90d38',
-    messagingSenderId: '1086151123753',
-    projectId: 'lotus2-e54de',
-    storageBucket: 'lotus2-e54de.appspot.com',
-    iosBundleId: 'com.example.lotuscapitalportal',
+    apiKey: 'AIzaSyDcbOG6Ygq57T6t7P9-UownnhLgx-4dhgI',
+    appId: '1:408991215613:ios:fc43cd9d7470cec5d1f394',
+    messagingSenderId: '408991215613',
+    projectId: 'lotuscaptialportal',
+    storageBucket: 'lotuscaptialportal.appspot.com',
+    iosBundleId: 'com.lotuscapitalportal',
   );
+
 }

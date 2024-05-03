@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1086151123753",
-    "project_id": "lotus2-e54de",
-    "storage_bucket": "lotus2-e54de.appspot.com"
+    "project_number": "408991215613",
+    "project_id": "lotuscaptialportal",
+    "storage_bucket": "lotuscaptialportal.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1086151123753:android:6f7471f5ae5a0ee3a90d38",
+        "mobilesdk_app_id": "1:408991215613:android:fabe3124a299d29cd1f394",
         "android_client_info": {
           "package_name": "com.example.lotuscapitalportal"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAwdUzYsJySR2YDQVu-liVgpmg6qSozc9g"
+          "current_key": "AIzaSyAN-Bg_bdurAmHI12o9JBKkWJJ3YKaQbnM"
         }
       ],
       "services": {
