@@ -68,6 +68,8 @@ PODS:
   - GoogleUtilities/UserDefaults (7.13.0):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
+  - local_auth_darwin (0.0.1):
+    - Flutter
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -86,6 +88,7 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
@@ -111,6 +114,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
+  local_auth_darwin:
+    :path: ".symlinks/plugins/local_auth_darwin/darwin"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   webview_flutter_wkwebview:
@@ -128,6 +133,7 @@ SPEC CHECKSUMS:
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
+  local_auth_darwin: c7e464000a6a89e952235699e32b329457608d98
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
