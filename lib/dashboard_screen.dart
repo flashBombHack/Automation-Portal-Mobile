@@ -106,11 +106,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _disableZoom(WebViewController controller) {
-    controller.evaluateJavascript('''
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      document.getElementsByTagName('head')[0].appendChild(meta);
+    controller.runJavascript('''
+      (function() {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+
+        document.addEventListener('gesturestart', function (e) {
+          e.preventDefault();
+        });
+
+        document.addEventListener('gesturechange', function (e) {
+          e.preventDefault();
+        });
+
+        document.addEventListener('gestureend', function (e) {
+          e.preventDefault();
+        });
+      })();
     ''');
   }
 }
