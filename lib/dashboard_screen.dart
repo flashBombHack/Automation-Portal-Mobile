@@ -42,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
                 _controller.complete(webViewController);
+                _disableZoom(webViewController);
               },
               onPageFinished: (String url) {
                 setState(() {
@@ -102,5 +103,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       },
     );
+  }
+
+  void _disableZoom(WebViewController controller) {
+    controller.evaluateJavascript('''
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+    ''');
   }
 }
