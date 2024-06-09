@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -38,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Stack(
           children: [
             WebView(
-              initialUrl: _buildInitialHtml(),
+              initialUrl: _buildInitialUrl(),
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
                 _controller.complete(webViewController);
@@ -47,15 +46,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 setState(() {
                   _isLoading = false;
                 });
+                _controller.future.then((webViewController) {
+                  _disableZoom(webViewController);
+                });
               },
               onPageStarted: (String url) {
                 setState(() {
                   _isLoading = true;
                 });
               },
-              javascriptChannels: <JavascriptChannel>{
+              javascriptChannels: <JavascriptChannel>[
                 _createFlutterBridgeChannel(),
-              },
+              ].toSet(),
               navigationDelegate: (NavigationRequest request) {
                 print('Navigation request: ${request.url}');
                 if (request.url.contains('https://autoportal.lotuscapitallimited.com/login')) {
@@ -67,7 +69,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onWebResourceError: (WebResourceError error) {
                 print('Error occurred: $error');
               },
-              gestureNavigationEnabled: true,
             ),
             if (_isLoading)
               Center(
@@ -87,33 +88,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return 'https://autoportal.lotuscapitallimited.com/mobile?token=${widget.token}&firstName=${widget.firstName}&lastName=${widget.lastName}&email=${widget.email}&userId=${widget.userId}&role=${widget.role}&department=${widget.department}';
   }
 
-  String _buildInitialHtml() {
-    final initialUrl = _buildInitialUrl();
-    return Uri.dataFromString('''
-      <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <style>
-            body, html {
-              margin: 0;
-              padding: 0;
-              height: 100%;
-              overflow: hidden;
-            }
-            iframe {
-              width: 100%;
-              height: 100%;
-              border: none;
-            }
-          </style>
-        </head>
-        <body>
-          <iframe src="$initialUrl"></iframe>
-        </body>
-      </html>
-    ''', mimeType: 'text/html', encoding: Encoding.getByName('utf-8')).toString();
-  }
-
   void _logout() {
     print('Logout triggered from WebView');
     Navigator.pushReplacementNamed(context, '/login');
@@ -129,5 +103,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       },
     );
+  }
+
+  void _disableZoom(WebViewController controller) {
+    controller.runJavascript('''
+      (function() {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        var head = document.getElementsByTagName('head')[0];
+        if (head) {
+          head.appendChild(meta);
+        }
+
+        document.addEventListener('gesturestart', function (e) {
+          e.preventDefault();
+        });
+
+        document.addEventListener('gesturechange', function (e) {
+          e.preventDefault();
+        });
+
+        document.addEventListener('gestureend', function (e) {
+          e.preventDefault();
+        });
+      })();
+    ''');
   }
 }
