@@ -38,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (result == ConnectivityResult.none) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
-    });
+    } as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
   }
 
   @override
