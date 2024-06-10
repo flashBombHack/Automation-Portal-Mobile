@@ -32,6 +32,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   static const platform = MethodChannel('download_pdf_channel');
 
   @override
+  void initState() {
+    super.initState();
+    // Enabling hybrid composition mode for improved performance
+    WebView.platform = SurfaceAndroidWebView();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
