@@ -37,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
       for (var result in event) {
         if (result == ConnectivityResult.none) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          _logout();
         }
       }
     });
