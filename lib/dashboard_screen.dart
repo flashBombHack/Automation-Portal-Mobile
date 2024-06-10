@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/services.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String token;
@@ -29,7 +28,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   bool _isLoading = true;
-  static const platform = MethodChannel('download_pdf_channel');
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +60,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ].toSet(),
               navigationDelegate: (NavigationRequest request) {
                 print('Navigation request: ${request.url}');
-                if (request.url.endsWith('.pdf')) {
-                  _downloadFile(request.url);
-                  return NavigationDecision.prevent;
-                }
                 if (request.url.contains('https://autoportal.lotuscapitallimited.com/login')) {
                   _logout();
                   return NavigationDecision.prevent;
@@ -141,14 +135,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       })();
     ''');
-  }
-
-  void _downloadFile(String url) async {
-    try {
-      final result = await platform.invokeMethod('downloadFile', {"url": url});
-      print('Download result: $result');
-    } on PlatformException catch (e) {
-      print("Failed to download file: '${e.message}'.");
-    }
   }
 }
