@@ -69,12 +69,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onWebResourceError: (WebResourceError error) {
                 print('Error occurred: $error');
               },
+              backgroundColor: Colors.transparent, // Set WebView background color to transparent
             ),
             if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFF8E1611), // Set the color here
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white, // Initial background color
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF8E1611), // Spinner color
+                      ),
+                    ),
                   ),
                 ),
               ),
