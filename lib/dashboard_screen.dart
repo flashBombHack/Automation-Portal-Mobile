@@ -34,8 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      ConnectivityResult result = results.isNotEmpty ? results.last : ConnectivityResult.none;
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
