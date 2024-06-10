@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _firebaseMessaging = FirebaseMessaging.instance;
+  final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
   bool _isLoggedIn = false;
@@ -207,137 +208,154 @@ class _LoginPageState extends State<LoginPage> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Image.asset(
-                      'assets/LotusLogo.png',
-                      height: 100,
-                    ),
-                    SizedBox(height: 16.0),
-                    Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.asset(
+                        'assets/LotusLogo.png',
+                        height: 100,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 16.0),
-                    TextField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25.0),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: Colors.redAccent, // Set your desired color here
-                            width: 2.0, // Set the width of the border
-                          ),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey[800],
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 32.0),
-                    ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                        String email = _emailController.text;
-                        String password = _passwordController.text;
-                        _login(email, password);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF8E1611),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        minimumSize: Size(double.infinity, 50),
-                      ),
-                      child: _isLoading
-                          ? SizedBox(
-                        width: 24.0,
-                        height: 24.0,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          backgroundColor: Color(0xFF8E1611),
-                        ),
-                      )
-                          : Text(
+                      SizedBox(height: 16.0),
+                      Text(
                         'Login',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    SizedBox(height: 50),
-                    if (Platform.isIOS)
-                      GestureDetector(
-                        onTap: _authenticateBiometric,
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              'assets/FaceID.png',
-                              width: 70,
-                              height: 70,
+                      SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 25.0),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Colors.redAccent, // Set your desired color here
+                              width: 2.0, // Set the width of the border
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Login with Face ID',
-                              style: TextStyle(color: Colors.black),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              color: Colors.grey[800],
                             ),
-                          ],
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 32.0),
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            String email = _emailController.text;
+                            String password = _passwordController.text;
+                            _login(email, password);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Color(0xFF8E1611),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          minimumSize: Size(double.infinity, 50),
+                        ),
+                        child: _isLoading
+                            ? SizedBox(
+                          width: 24.0,
+                          height: 24.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.0,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            backgroundColor: Color(0xFF8E1611),
+                          ),
+                        )
+                            : Text(
+                          'Login',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    if (Platform.isAndroid)
-                      GestureDetector(
-                        onTap: _authenticateBiometric,
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              'assets/Fingerprint.png',
-                              width: 70,
-                              height: 70,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Login with Fingerprint',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
+                      SizedBox(height: 50),
+                      if (Platform.isIOS)
+                        GestureDetector(
+                          onTap: _authenticateBiometric,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/FaceID.png',
+                                width: 70,
+                                height: 70,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Login with Face ID',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                  ],
+                      if (Platform.isAndroid)
+                        GestureDetector(
+                          onTap: _authenticateBiometric,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/Fingerprint.png',
+                                width: 70,
+                                height: 70,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Login with Fingerprint',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
