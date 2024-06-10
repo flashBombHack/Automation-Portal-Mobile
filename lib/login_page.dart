@@ -9,6 +9,89 @@ import 'package:local_auth/local_auth.dart';
 import 'PasswordResetPage.dart';
 import 'dashboard_screen.dart';
 
+// Custom Error Dialog Widget
+class CustomErrorDialog extends StatelessWidget {
+  final String message;
+
+  const CustomErrorDialog({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: contentBox(context),
+    );
+  }
+
+  Widget contentBox(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 66, bottom: 16, left: 16, right: 16),
+          margin: EdgeInsets.only(top: 66),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(0, 10),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                'Error',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 15),
+              Text(
+                message,
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 22),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 16,
+          right: 16,
+          child: CircleAvatar(
+            backgroundColor: Colors.redAccent,
+            radius: 30,
+            child: Icon(
+              Icons.error_outline,
+              color: Colors.white,
+              size: 50,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -98,8 +181,11 @@ class _LoginPageState extends State<LoginPage> {
       if (email != null && password != null) {
         _login(email, password, isBiometric: true);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login first to enable biometric authentication')),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomErrorDialog(message: 'Login first to enable biometric authentication');
+          },
         );
       }
     }
@@ -181,14 +267,20 @@ class _LoginPageState extends State<LoginPage> {
         }
       } else {
         // Handle errors based on status codes
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomErrorDialog(message: message);
+          },
         );
       }
     } catch (error) {
       print('Error during login: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred, please contact the system administrator')),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomErrorDialog(message: 'An error occurred, please contact the system administrator');
+        },
       );
     } finally {
       setState(() {
@@ -365,3 +457,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
