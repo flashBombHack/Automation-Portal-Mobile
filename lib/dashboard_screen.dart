@@ -34,11 +34,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
+      for (var result in event) {
+        if (result == ConnectivityResult.none) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
       }
-    } as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
+    } as void Function(List<ConnectivityResult>)?) as StreamSubscription<ConnectivityResult>;
   }
 
   @override
