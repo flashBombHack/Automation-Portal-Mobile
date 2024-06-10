@@ -29,7 +29,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   bool _isLoading = true;
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   @override
   void initState() {
@@ -40,13 +40,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
       }
-    } as void Function(List<ConnectivityResult>)?) as StreamSubscription<ConnectivityResult>;
+    });
   }
 
   @override
   void dispose() {
-    _connectivitySubscription.cancel();
     super.dispose();
+    _connectivitySubscription?.cancel();
   }
 
   @override
