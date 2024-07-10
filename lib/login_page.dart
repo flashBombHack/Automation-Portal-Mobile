@@ -118,6 +118,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _checkBiometricEnabled();
     _checkLoggedIn();
+    _populateEmail();
   }
 
   Future<void> _checkLoggedIn() async {
@@ -134,6 +135,16 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isBiometricEnabled = biometricEnabled;
     });
+  }
+
+  Future<void> _populateEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    if (email != null) {
+      setState(() {
+        _emailController.text = email;
+      });
+    }
   }
 
   Future<bool> _isCredentialsStored() async {
@@ -457,4 +468,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
