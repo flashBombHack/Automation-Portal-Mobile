@@ -2,7 +2,88 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_page.dart';
+
+// Custom Error Dialog Widget
+class CustomErrorDialog extends StatelessWidget {
+  final String message;
+
+  const CustomErrorDialog({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: contentBox(context),
+    );
+  }
+
+  Widget contentBox(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 66, bottom: 16, left: 16, right: 16),
+          margin: EdgeInsets.only(top: 66),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(0, 10),
+                  blurRadius: 10),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                'Error',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 15),
+              Text(
+                message,
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 22),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 16,
+          right: 16,
+          child: CircleAvatar(
+            backgroundColor: Colors.redAccent,
+            radius: 30,
+            child: Icon(
+              Icons.error_outline,
+              color: Colors.white,
+              size: 50,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class PasswordResetPage extends StatefulWidget {
   final String email;
@@ -27,15 +108,18 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
     final String confirmPassword = _confirmPasswordController.text;
 
     if (newPassword != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('New password and confirm password do not match.')),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomErrorDialog(message: 'New password and confirm password do not match.');
+        },
       );
       return;
     }
 
     final Uri url = Uri.parse('https://automationapi.lotuscapitallimited.com/api/user/resetpassword');
     try {
-      print('Parsed Email value $widget.email');
+      print('Parsed Email value ${widget.email}');
       final http.Response response = await http.put(
         url,
         headers: <String, String>{
@@ -55,30 +139,30 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
           SnackBar(content: Text(message)),
         );
 
-
         if (message == 'Password updated successfully.') {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('password', newPassword);
           Navigator.pushReplacementNamed(context, '/login');
         }
-      } else if (response.statusCode == 400) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        final String errorMessage = data['error'];
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to reset password. Please try again later.')),
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final String errorMessage = data['error'] ?? 'Failed to reset password. Please try again later.';
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomErrorDialog(message: errorMessage);
+          },
         );
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to reset password. Please try again later.')),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomErrorDialog(message: 'An error occurred: $error');
+        },
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
