@@ -128,13 +128,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       name: 'FlutterBridge',
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
-        if (message.message == 'Requesting logout from Webview') {
+        messageFromWebview = message.message;
+        if (messageFromWebview == 'Requesting logout from Webview') {
           _logout();
         }
-        setState(() {
-          messageFromWebview = message.message;
-          print('checking the value of message: ${message.message}');
-        });
+
       },
     );
   }
