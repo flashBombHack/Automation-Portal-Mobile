@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String token;
@@ -116,6 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _logout() {
     print('Logout triggered from WebView');
+    _clearCookies();
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -126,19 +129,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
         print('Message from JavaScript: ${message.message}');
         if (message.message == 'Requesting logout from Webview') {
           _logout();
-          _clearMessage();
         }
       },
     );
   }
 
-  void _clearMessage() async {
+  void _clearCookies() async {
     final WebViewController controller = await _controller.future;
-    controller.runJavascript('''
-      (function() {
-        window.FlutterBridgeMessage = '';
-      })();
-    ''');
+    if (Platform.isAndroid) {
+      WebViewCookieManager cookieManager = WebViewCookieManager();
+      await cookieManager.clearCookies();
+    } else if (Platform.isIOS) {
+      await controller.clearCache();
+      await CookieManager().clearCookies();
+    }
   }
 
   void _disableZoom(WebViewController controller) {
