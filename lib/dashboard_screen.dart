@@ -132,7 +132,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _logout();
         }
         setState(() {
-          messageFromWebview = message.message; // Update message state
+          messageFromWebview = message.message;
+          print('checking the value of message: ${message.message}');
         });
       },
     );
