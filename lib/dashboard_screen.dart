@@ -126,9 +126,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         print('Message from JavaScript: ${message.message}');
         if (message.message == 'Requesting logout from Webview') {
           _logout();
+          _clearMessage();
         }
       },
     );
+  }
+
+  void _clearMessage() async {
+    final WebViewController controller = await _controller.future;
+    controller.runJavascript('''
+      (function() {
+        window.FlutterBridgeMessage = '';
+      })();
+    ''');
   }
 
   void _disableZoom(WebViewController controller) {
