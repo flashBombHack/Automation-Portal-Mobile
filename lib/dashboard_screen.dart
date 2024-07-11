@@ -79,14 +79,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               javascriptChannels: <JavascriptChannel>[
                 _createFlutterBridgeChannel(),
               ].toSet(),
-              navigationDelegate: (NavigationRequest request) {
-                print('Navigation request: ${request.url}');
-                if (request.url.contains('https://autoportal.lotuscapitallimited.com/login')) {
-                  _logout();
-                  return NavigationDecision.prevent;
-                }
-                return NavigationDecision.navigate;
-              },
               onWebResourceError: (WebResourceError error) {
                 print('Error occurred: $error');
               },
@@ -120,10 +112,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       messageFromWebview = ''; // Clear message state
     });
-    // Force reload WebView after logging out to clear any lingering state
-    _controller.future.then((webViewController) {
-      webViewController.loadUrl(_buildInitialUrl());
-    });
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -132,12 +120,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       name: 'FlutterBridge',
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
-        setState(() {
-          messageFromWebview = message.message;
-        });
+        messageFromWebview = message.message;
         if (messageFromWebview == 'Requesting logout from Webview') {
-          _logout();
+          messageFromWebview = '';
+          Navigator.pushReplacementNamed(context, '/login');
         }
+
       },
     );
   }
