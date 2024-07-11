@@ -29,25 +29,23 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   bool _isLoading = true;
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   String messageFromWebview = ''; // State variable to store message
 
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
-      for (var result in event) {
-        if (result == ConnectivityResult.none) {
-          _logout();
-        }
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        _logout();
       }
-    });
+    } as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>?;
   }
 
   @override
   void dispose() {
-    super.dispose();
     _connectivitySubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -120,6 +118,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       messageFromWebview = ''; // Clear message state
     });
+    // Force reload WebView after logging out to clear any lingering state
+    _controller.future.then((webViewController) {
+      webViewController.loadUrl(_buildInitialUrl());
+    });
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -128,12 +130,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       name: 'FlutterBridge',
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
-        messageFromWebview = message.message;
+        setState(() {
+          messageFromWebview = message.message;
+        });
         if (messageFromWebview == 'Requesting logout from Webview') {
-          messageFromWebview = '';
-          Navigator.pushReplacementNamed(context, '/login');
+          _logout();
         }
-
       },
     );
   }
