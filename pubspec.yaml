@@ -43,7 +43,7 @@ dependencies:
   flutter_inappwebview: ^6.0.0
   shared_preferences: ^2.0.8
   local_auth: ^2.2.0
-  connectivity_plus: ^6.0.3
+  connectivity_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:
