@@ -115,10 +115,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Cancel the connectivity subscription
     _connectivitySubscription?.cancel();
+    print('Connectivity subscription cancelled: ${_connectivitySubscription == null}');
 
     // Navigate to the login screen
     Navigator.pushReplacementNamed(context, '/login');
   }
+
 
   JavascriptChannel _createFlutterBridgeChannel() {
     return JavascriptChannel(
