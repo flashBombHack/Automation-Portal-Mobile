@@ -29,23 +29,25 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   bool _isLoading = true;
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   String messageFromWebview = ''; // State variable to store message
 
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        _logout();
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
+      for (var result in event) {
+        if (result == ConnectivityResult.none) {
+          _logout();
+        }
       }
-    } as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>?;
+    });
   }
 
   @override
   void dispose() {
-    _connectivitySubscription?.cancel();
     super.dispose();
+    _connectivitySubscription?.cancel();
   }
 
   @override
