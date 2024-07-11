@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'PasswordResetPage.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String token;
@@ -39,10 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
       for (var result in event) {
         if (result == ConnectivityResult.none) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PasswordResetPage(email: widget.email)),
-          );
+          _logout();
         }
       }
     });
@@ -116,6 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       messageFromWebview = ''; // Clear message state
     });
+    _connectivitySubscription?.cancel();
     Navigator.pushReplacementNamed(context, '/login');
   }
 
