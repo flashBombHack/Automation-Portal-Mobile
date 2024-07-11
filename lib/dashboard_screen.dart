@@ -29,23 +29,25 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   bool _isLoading = true;
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   String messageFromWebview = ''; // State variable to store message
 
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        _logout();
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
+      for (var result in event) {
+        if (result == ConnectivityResult.none) {
+          _logout();
+        }
       }
     });
   }
 
   @override
   void dispose() {
-    _connectivitySubscription?.cancel();
     super.dispose();
+    _connectivitySubscription?.cancel();
   }
 
   @override
@@ -110,7 +112,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       messageFromWebview = ''; // Clear message state
     });
+
+    // Cancel the connectivity subscription
     _connectivitySubscription?.cancel();
+
+    // Navigate to the login screen
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -119,12 +125,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       name: 'FlutterBridge',
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
-        setState(() {
-          messageFromWebview = message.message;
-        });
+        messageFromWebview = message.message;
         if (messageFromWebview == 'Requesting logout from Webview') {
-          _logout();
+          messageFromWebview = '';
+          Navigator.pushReplacementNamed(context, '/login');
         }
+
       },
     );
   }
