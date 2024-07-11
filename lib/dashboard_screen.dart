@@ -130,6 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         print('Message from JavaScript: ${message.message}');
         messageFromWebview = message.message;
         if (messageFromWebview == 'Requesting logout from Webview') {
+          messageFromWebview = '';
           Navigator.pushReplacementNamed(context, '/login');
         }
 
