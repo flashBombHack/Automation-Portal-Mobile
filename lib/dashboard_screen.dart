@@ -69,38 +69,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             RefreshIndicator(
               onRefresh: _refresh,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: WebView(
-                      initialUrl: _buildInitialUrl(),
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onWebViewCreated: (WebViewController webViewController) {
-                        _controller.complete(webViewController);
-                      },
-                      onPageFinished: (String url) {
-                        setState(() {
-                          _isLoading = false;
-                        });
-                        _controller.future.then((webViewController) {
-                          _disableZoom(webViewController);
-                        });
-                      },
-                      onPageStarted: (String url) {
-                        setState(() {
-                          _isLoading = true;
-                        });
-                      },
-                      javascriptChannels: <JavascriptChannel>[
-                        _createFlutterBridgeChannel(),
-                      ].toSet(),
-                      onWebResourceError: (WebResourceError error) {
-                        print('Error occurred: $error');
-                      },
-                      backgroundColor: Colors.transparent, // Set WebView background color to transparent
-                    ),
-                  ),
-                ],
+              child: WebView(
+                initialUrl: _buildInitialUrl(),
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
+                onPageFinished: (String url) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                  _controller.future.then((webViewController) {
+                    _disableZoom(webViewController);
+                  });
+                },
+                onPageStarted: (String url) {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                },
+                javascriptChannels: <JavascriptChannel>[
+                  _createFlutterBridgeChannel(),
+                ].toSet(),
+                onWebResourceError: (WebResourceError error) {
+                  print('Error occurred: $error');
+                },
+                backgroundColor: Colors.transparent, // Set WebView background color to transparent
               ),
             ),
             if (_isLoading)
