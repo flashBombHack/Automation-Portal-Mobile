@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()), // Replace `LoginScreen` with your actual login screen widget
+      MaterialPageRoute(builder: (context) => LoginPage()), // Replace `LoginScreen` with your actual login screen widget
           (Route<dynamic> route) => false,
     );
   }
