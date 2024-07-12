@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
       for (var result in event) {
-        if (result == ConnectivityResult.none && !isLoggedOut) {
+        if (result == ConnectivityResult.none && !isLoggedOut && messageFromWebview == 'Requesting logout from Webview') {
           _logout();
         }
       }
@@ -134,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
         messageFromWebview = message.message;
-        if (messageFromWebview == 'Requesting logout from Webview' && !isLoggedOut) {
+        if (messageFromWebview == 'Requesting logout from Webview') {
           messageFromWebview = '';
           _logout();
         }
