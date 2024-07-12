@@ -119,7 +119,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     _connectivitySubscription?.cancel();
     print('Connectivity subscription cancelled in logout: ${_connectivitySubscription == null}');
-    Navigator.pushReplacementNamed(context, '/login');
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Replace `LoginScreen` with your actual login screen widget
+          (Route<dynamic> route) => false,
+    );
   }
 
   JavascriptChannel _createFlutterBridgeChannel() {
