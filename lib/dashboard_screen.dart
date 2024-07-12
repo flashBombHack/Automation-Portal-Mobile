@@ -31,23 +31,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isLoading = true;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   String messageFromWebview = ''; // State variable to store message
+  bool isLoggedOut = false; // Flag to track if the user has been logged out
 
   @override
   void initState() {
     super.initState();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> event) {
       for (var result in event) {
-        if (result == ConnectivityResult.none) {
+        if (result == ConnectivityResult.none && !isLoggedOut) {
           _logout();
         }
       }
     });
+    print('Connectivity subscription initialized: ${_connectivitySubscription != null}');
   }
 
   @override
   void dispose() {
-    super.dispose();
+    print('Disposing connectivity subscription.');
     _connectivitySubscription?.cancel();
+    print('Connectivity subscription cancelled: ${_connectivitySubscription == null}');
+    super.dispose();
   }
 
   @override
@@ -110,17 +114,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _logout() {
     print('Logout triggered from WebView');
     setState(() {
+      isLoggedOut = true; // Set the flag to true to prevent further logouts
       messageFromWebview = ''; // Clear message state
     });
-
-    // Cancel the connectivity subscription
     _connectivitySubscription?.cancel();
-    print('Connectivity subscription cancelled: ${_connectivitySubscription == null}');
-
-    // Navigate to the login screen
+    print('Connectivity subscription cancelled in logout: ${_connectivitySubscription == null}');
     Navigator.pushReplacementNamed(context, '/login');
   }
-
 
   JavascriptChannel _createFlutterBridgeChannel() {
     return JavascriptChannel(
@@ -128,11 +128,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onMessageReceived: (JavascriptMessage message) {
         print('Message from JavaScript: ${message.message}');
         messageFromWebview = message.message;
-        if (messageFromWebview == 'Requesting logout from Webview') {
+        if (messageFromWebview == 'Requesting logout from Webview' && !isLoggedOut) {
           messageFromWebview = '';
-          Navigator.pushReplacementNamed(context, '/login');
+          _logout();
         }
-
       },
     );
   }
