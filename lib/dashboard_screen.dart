@@ -64,12 +64,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            RefreshIndicator(
-              onRefresh: _refresh,
-              child: WebView(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              WebView(
                 initialUrl: _buildInitialUrl(),
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
@@ -96,21 +96,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
                 backgroundColor: Colors.transparent, // Set WebView background color to transparent
               ),
-            ),
-            if (_isLoading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white, // Initial background color
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF8E1611), // Spinner color
+              if (_isLoading)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.white, // Initial background color
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF8E1611), // Spinner color
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
