@@ -67,8 +67,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            RefreshIndicator(
-              onRefresh: _refresh,
+            GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.primaryDelta! > 20) {
+                  _refresh();
+                }
+              },
               child: WebView(
                 initialUrl: _buildInitialUrl(),
                 javascriptMode: JavascriptMode.unrestricted,
