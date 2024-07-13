@@ -1,0 +1,16 @@
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
+-keep class io.flutter.embedding.** { *; }
+-keep class io.flutter.embedding.engine.** { *; }
+-keep class io.flutter.embedding.engine.dart.** { *; }
+-keep class io.flutter.embedding.engine.plugins.** { *; }
+-keep class io.flutter.embedding.android.** { *; }
+-keep class io.flutter.plugin.common.** { *; }
+-keep class io.flutter.plugin.platform.** { *; }
+-keep class io.flutter.plugin.editing.** { *; }
+-keep class io.flutter.plugin.editing.plugins.** { *; }
+-keep class io.flutter.plugin.editing.types.** { *; }
+-keep class io.flutter.plugins.** { *; }
+-keep class io.flutter.plugins.connectivity.** { *; }

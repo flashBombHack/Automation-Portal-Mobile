@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:408991215613:android:fabe3124a299d29cd1f394",
+        "mobilesdk_app_id": "1:408991215613:android:dc19d99912e8383fd1f394",
         "android_client_info": {
-          "package_name": "com.example.lotuscapitalportal"
+          "package_name": "com.lotuscapitalportal"
         }
       },
       "oauth_client": [],
