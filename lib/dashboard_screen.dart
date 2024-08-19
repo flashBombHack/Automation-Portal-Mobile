@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'login_page.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String token;
@@ -139,16 +144,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
   JavascriptChannel _createFlutterBridgeChannel() {
     return JavascriptChannel(
       name: 'FlutterBridge',
-      onMessageReceived: (JavascriptMessage message) {
+      onMessageReceived: (JavascriptMessage message) async {
         print('Message from JavaScript: ${message.message}');
         messageFromWebview = message.message;
+
         if (messageFromWebview == 'Requesting logout from Webview') {
           messageFromWebview = '';
           _logout();
+        } else {
+          // Assuming the PDF data is sent as a base64 string
+          await _saveAndOpenPDF(messageFromWebview);
         }
       },
     );
   }
+
+  Future<void> _saveAndOpenPDF(String base64String) async {
+    try {
+      // Get the directory to save the PDF
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      File file = File('$tempPath/document.pdf');
+
+      // Decode the base64 string and write it to the file
+      Uint8List bytes = base64Decode(base64String);
+      await file.writeAsBytes(bytes);
+
+      // Open the file using the default document viewer
+      OpenFile.open(file.path);
+    } catch (e) {
+      print('Error saving or opening PDF: $e');
+    }
+  }
+
 
   void _disableZoom(WebViewController controller) {
     controller.runJavascript('''
