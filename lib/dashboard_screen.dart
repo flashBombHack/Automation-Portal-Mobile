@@ -162,9 +162,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _saveAndOpenPDF(String base64String) async {
     try {
       // Get the directory to save the PDF
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      File file = File('$tempPath/document.pdf');
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+      File file = File('$appDocPath/document.pdf');
 
       // Decode the base64 string and write it to the file
       Uint8List bytes = base64Decode(base64String);
@@ -176,6 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print('Error saving or opening PDF: $e');
     }
   }
+
 
 
   void _disableZoom(WebViewController controller) {
